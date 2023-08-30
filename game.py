@@ -47,7 +47,32 @@ class Ball:
     
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
+
+class Brick:
+    
+    def __init__(self, x, y, width, height, health, color):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.health = health
+        self.color = color
+
+    def draw (self, win):
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
+
+    def collide (self, ball):
+        if not (ball.x < self.x + self.width and ball.x >= self.x):
+            return False
+        if not (ball.y + ball.radius >= self.y):
+            return False
         
+        self.hit()
+        return True
+    
+    def hit(self):
+        self.health -= 1
+            
 def draw (win, paddle, ball):
     win.fill("white")
     paddle.draw(win)
