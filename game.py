@@ -20,6 +20,9 @@ class Paddle:
         
     def draw(self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))   
+        
+    def move(self, direction = 1):
+        self.x = self.x + self.VEL * direction
 
 def draw (win, paddle):
     win.fill("white")
@@ -30,16 +33,24 @@ def draw (win, paddle):
 def main():
     clock = pygame.time.Clock()
     
+    paddle = Paddle(WIDTH / 2 - PADDLE_WIDTH / 2, HEIGHT - PADDLE_HEIGHT - 5, PADDLE_WIDTH, PADDLE_HEIGHT, "black")
+    
     run = True
     while run:
         clock.tick(FPS)
         
-        paddle = Paddle(WIDTH / 2 - PADDLE_WIDTH / 2, HEIGHT - PADDLE_HEIGHT - 5, PADDLE_WIDTH, PADDLE_HEIGHT, "black")
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 break
+            
+        keys = pygame.key.get_pressed()   
+       
+        if keys[pygame.K_LEFT] and paddle.x - paddle.VEL >= 0:
+            paddle.move(-1)
+        if keys[pygame.K_RIGHT] and paddle.x + paddle.width - paddle.VEL <= WIDTH:
+            paddle.move(+1)
     
         draw(win, paddle)
     
