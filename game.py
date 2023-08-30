@@ -21,8 +21,7 @@ class Paddle:
         self.y = y
         self.width = width
         self.height = height
-        self.colors = colors
-        self.color = colors[0]
+        self.color = colors
         
     def draw(self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))   
@@ -54,14 +53,15 @@ class Ball:
 
 class Brick:
     
-    def __init__(self, x, y, width, height, health, color):
+    def __init__(self, x, y, width, height, health, colors):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.health = health
         self.max_health = health
-        self.color = color
+        self.colors = colors
+        self.color = colors[0]
 
     def draw (self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.height))
@@ -89,14 +89,14 @@ class Brick:
         return tuple(int(a + (b - a) * t) for a, b in zip(color_a, color_b))
             
 def draw (win, paddle, ball, bricks, lives):
-    win.fill("white")
+    win.fill((255, 255, 255))
     paddle.draw(win)
     ball.draw(win)
     
     for brick in bricks:
         brick.draw(win)
         
-    lives_text = LIVES_FONT.render(f"Lives {lives}", 1, "black")
+    lives_text = LIVES_FONT.render(f"Lives {lives}", 1, (0, 0, 0))
     win.blit(lives_text, (10, HEIGHT - lives_text.get_height() - 10))
     
     pygame.display.update()
@@ -146,8 +146,8 @@ def main():
     paddle_x = WIDTH / 2 - PADDLE_WIDTH / 2
     paddle_y = HEIGHT - PADDLE_HEIGHT - 5
     
-    paddle = Paddle(paddle_x, paddle_y , PADDLE_WIDTH, PADDLE_HEIGHT, "black")
-    ball = Ball(WIDTH / 2, paddle_y - BALL_RADIUS, BALL_RADIUS, "black")
+    paddle = Paddle(paddle_x, paddle_y , PADDLE_WIDTH, PADDLE_HEIGHT, (0, 0, 0))
+    ball = Ball(WIDTH / 2, paddle_y - BALL_RADIUS, BALL_RADIUS, (0, 0, 0))
     bricks = generate_bricks(3, 10)
     lives = 3
     
@@ -180,7 +180,29 @@ def main():
             if brick.health <= 0:
                 bricks.remove(brick)
                 
+    #lives check
+        if ball.y + ball.radius >= HEIGHT:
+            lives -= 1
+            ball.x = paddle.x + paddle.width / 2
+            ball.y = paddle.y - BALL_RADIUS
+            ball.set_vel(0, ball.VEL * -1)
+        
+        if lives <= 0:
+            lost_text = LIVES_FONT.render("You lost!", 1, "red")
+            win.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 2 - lost_text.get_height() / 2))
+            pygame.display.update()
+            pygame.time.delay(3000)
 
+            paddle = Paddle(paddle_x, paddle_y , PADDLE_WIDTH, PADDLE_HEIGHT, (0, 0, 0))
+            ball = Ball(WIDTH / 2, paddle_y - BALL_RADIUS, BALL_RADIUS, (0, 0, 0))
+            bricks = generate_bricks(3, 10)
+            lives = 3
+        
+            lost_text = LIVES_FONT.render("You lost!", 1, "red")
+            win.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 2 - lost_text.get_height() / 2))
+            pygame.display.update()
+            pygame.time.delay(3000)
+            
     
     pygame.quit()
     quit()
