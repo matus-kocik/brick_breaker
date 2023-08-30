@@ -1,6 +1,8 @@
 import pygame
 import math
 
+pygame.init()
+
 WIDTH, HEIGHT = 800, 600
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Brick Breaker")
@@ -10,6 +12,7 @@ PADDLE_WIDTH = 100
 PADDLE_HEIGHT = 15
 BALL_RADIUS = 10
 
+LIVES_FONT = pygame.font.SysFont("comicsans", 40)
 
 class Paddle:
     VEL = 5
@@ -85,13 +88,16 @@ class Brick:
         # this is a naive interpolation
         return tuple(int(a + (b - a) * t) for a, b in zip(color_a, color_b))
             
-def draw (win, paddle, ball, bricks):
+def draw (win, paddle, ball, bricks, lives):
     win.fill("white")
     paddle.draw(win)
     ball.draw(win)
     
     for brick in bricks:
         brick.draw(win)
+        
+    lives_text = LIVES_FONT.render(f"Lives {lives}", 1, "black")
+    win.blit(lives_text, (10, HEIGHT - lives_text.get_height() - 10))
     
     pygame.display.update()
     
@@ -143,6 +149,7 @@ def main():
     paddle = Paddle(paddle_x, paddle_y , PADDLE_WIDTH, PADDLE_HEIGHT, "black")
     ball = Ball(WIDTH / 2, paddle_y - BALL_RADIUS, BALL_RADIUS, "black")
     bricks = generate_bricks(3, 10)
+    lives = 3
     
     run = True
     while run:
@@ -165,7 +172,7 @@ def main():
         ball.move()
         ball_collision(ball)
         ball_paddle_collision(ball, paddle)
-        draw(win, paddle, ball, bricks)
+        draw(win, paddle, ball, bricks, lives)
         
         for brick in bricks[:]:
             brick.collide(ball)
