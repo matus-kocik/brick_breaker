@@ -1,4 +1,5 @@
 import pygame
+import math
 
 WIDTH, HEIGHT = 800, 600
 win = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -33,7 +34,7 @@ class Ball:
         self.y = y
         self.radius = radius
         self.color = color
-        self.x_vel = 2
+        self.x_vel = 0
         self.y_vel = -self.VEL
         
     def move(self):
@@ -46,8 +47,7 @@ class Ball:
     
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
-
-
+        
 def draw (win, paddle, ball):
     win.fill("white")
     paddle.draw(win)
@@ -60,6 +60,23 @@ def ball_collision(ball):
     if ball.y + BALL_RADIUS >= HEIGHT or ball.y - BALL_RADIUS <= 0:
         ball.set_vel(ball.x_vel, ball.y_vel * -1)
 
+def ball_paddle_collision(ball, paddle):
+    if not (ball.x < paddle.x + paddle.width and ball.x >= paddle.x):
+        return
+    if not (ball.y + ball.radius >= paddle.y):
+        return
+    
+    paddle_center = paddle.x + paddle.width / 2
+    distance_to_center = ball.x - paddle_center
+    
+    percent_width = distance_to_center / paddle.width
+    angle = percent_width * 90
+    angle_radians = math.radians(angle)
+    
+    x_vel = math.sin(angle_radians) * ball.VEL
+    y_vel = math.cos(angle_radians) * ball.VEL * -1
+    
+    ball.set_vel(x_vel, y_vel)
 
 def main():
     clock = pygame.time.Clock()
@@ -92,6 +109,7 @@ def main():
             
         ball.move()
         ball_collision(ball)
+        ball_paddle_collision(ball, paddle)
         draw(win, paddle, ball)
 
     
