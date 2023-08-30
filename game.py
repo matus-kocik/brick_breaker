@@ -33,7 +33,7 @@ class Ball:
         self.y = y
         self.radius = radius
         self.color = color
-        self.x_vel = 0
+        self.x_vel = 2
         self.y_vel = -self.VEL
         
     def move(self):
@@ -53,6 +53,12 @@ def draw (win, paddle, ball):
     paddle.draw(win)
     ball.draw(win)
     pygame.display.update()
+    
+def ball_collision(ball):
+    if ball.x - BALL_RADIUS <= 0 or ball.x + BALL_RADIUS >= WIDTH:
+        ball.set_vel(ball.x_vel * -1, ball.y_vel)
+    if ball.y + BALL_RADIUS >= HEIGHT or ball.y - BALL_RADIUS <= 0:
+        ball.set_vel(ball.x_vel, ball.y_vel * -1)
 
 
 def main():
@@ -85,6 +91,7 @@ def main():
             
             
         ball.move()
+        ball_collision(ball)
         draw(win, paddle, ball)
 
     
