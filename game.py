@@ -68,6 +68,8 @@ class Brick:
             return False
         
         self.hit()
+        ball.set_vel(ball.x_vel, ball.y_vel * -1)
+        
         return True
     
     def hit(self):
@@ -109,13 +111,13 @@ def ball_paddle_collision(ball, paddle):
     
 def generate_bricks(rows, cols):
     gap = 2
-    brick_width = 20
+    brick_width = WIDTH // cols - gap
     brick_height = 20
     
     bricks = []
     for row in range(rows):
         for col in range(cols):
-            brick = Brick(col * brick_width + gap, row * brick_height + gap, brick_width, brick_height, 5, "green")
+            brick = Brick(col * brick_width + gap * col, row * brick_height + gap * row, brick_width, brick_height, 5, "green")
             bricks.append(brick)
         
     return bricks
