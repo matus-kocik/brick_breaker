@@ -64,7 +64,7 @@ class Brick:
     def collide (self, ball):
         if not (ball.x < self.x + self.width and ball.x >= self.x):
             return False
-        if not (ball.y + ball.radius >= self.y):
+        if not (ball.y - ball.radius <= self.y + self.height):
             return False
         
         self.hit()
