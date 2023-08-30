@@ -188,7 +188,7 @@ def main():
             ball.set_vel(0, ball.VEL * -1)
         
         if lives <= 0:
-            lost_text = LIVES_FONT.render("You lost!", 1, "red")
+            lost_text = LIVES_FONT.render("You lost", 1, (255, 0, 0))
             win.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 2 - lost_text.get_height() / 2))
             pygame.display.update()
             pygame.time.delay(3000)
@@ -197,8 +197,8 @@ def main():
             ball = Ball(WIDTH / 2, paddle_y - BALL_RADIUS, BALL_RADIUS, (0, 0, 0))
             bricks = generate_bricks(3, 10)
             lives = 3
+
         
-            lost_text = LIVES_FONT.render("You lost!", 1, "red")
             win.blit(lost_text, (WIDTH / 2 - lost_text.get_width() / 2, HEIGHT / 2 - lost_text.get_height() / 2))
             pygame.display.update()
             pygame.time.delay(3000)
